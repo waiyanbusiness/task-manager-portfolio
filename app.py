@@ -28,6 +28,18 @@ def delete_task(id):
     db.session.commit()
     return jsonify({'message': 'Task deleted'}), 200
 
+@app.route('/tasks/<int:id>', methods=['PUT'])
+def update_task(id):
+    task = Task.query.get(id)
+    if not task:
+        return jsonify({'error': 'Task not found'}), 404
+
+    data = request.get_json()
+    task.task = data.get('task', task.task)
+
+    db.session.commit()
+    return jsonify(task.to_dict()), 200
+
 
 if __name__ == '__main__':
     app.run(debug=True)
